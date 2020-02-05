@@ -13,7 +13,7 @@
 #include "audio_test_data.h"
 #include <math.h>
 
-void audio_test_push_sin(fifo_t* fifo, float freq, float sampleRate, int len)
+void audio_test_push_sin(fifo_t* fifo, float freq, int16_t amp, float sampleRate, int len)
 {
     static float idx =0;
 
@@ -21,9 +21,27 @@ void audio_test_push_sin(fifo_t* fifo, float freq, float sampleRate, int len)
     
     for(int i=0; i < len; i++)
     {
-     val = sin((freq * (2 * 3.14159) * idx) / sampleRate);
+     val = amp * sin((freq * (2 * 3.14159) * idx++) / sampleRate);
 
      fifo_push(fifo, &val);
+    }
+    
+
+}
+
+void audio_test_push_sin_stereo(fifo_t* fifo, float freqa, float freqb, int16_t ampa, int16_t ampb, float sampleRate, int len)
+{
+    static float idx =0;
+    int16_t vala;
+    int16_t valb;
+    
+    for(int i=0; i < (len/2); i++)  //divide by two for stero
+    {
+     vala = ampa * sin((freqa * (2 * 3.14159) * idx) / sampleRate);
+     valb = ampb * sin((freqb * (2 * 3.14159) * idx++) / sampleRate);
+
+     fifo_push(fifo, &vala);
+     fifo_push(fifo, &valb);
     }
     
 
